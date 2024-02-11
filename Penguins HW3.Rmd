@@ -1,0 +1,138 @@
+
+---
+title: "Homework 3"
+author: "Daniel O'Callaghan"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    code_folding: "hide"
+---
+
+
+```{r setup, include=FALSE}
+if (!require("readr")) {
+   install.packages("readr")
+   library(readr)
+}
+if (!require("tidyverse")) {
+   install.packages("tidyverse")
+   library(tidyverse)
+}
+if (!require("knitr")) {
+   install.packages("knitr")
+   library(knitr)
+}
+if (!require("cowplot")) {
+   install.packages("cowplot")
+   library(cowplot)
+}
+if (!require("latex2exp")) {
+   install.packages("latex2exp")
+   library(latex2exp)
+}
+if (!require("plotly")) {
+   install.packages("plotly")
+   library(plotly)
+}
+if (!require("gapminder")) {
+   install.packages("gapminder")
+   library(gapminder)
+}
+if (!require("png")) {
+    install.packages("png")             # Install png package
+    library("png")
+}
+if (!require("RCurl")) {
+    install.packages("RCurl")             # Install RCurl package
+    library("RCurl")
+}
+if (!require("colourpicker")) {
+    install.packages("colourpicker")              
+    library("colourpicker")
+}
+if (!require("gganimate")) {
+    install.packages("gganimate")              
+    library("gganimate")
+}
+if (!require("gifski")) {
+    install.packages("gifski")              
+    library("gifski")
+}
+if (!require("magick")) {
+    install.packages("magick")              
+    library("magick")
+}
+if (!require("grDevices")) {
+    install.packages("grDevices")              
+    library("grDevices")
+}
+if (!require("jpeg")) {
+    install.packages("jpeg")              
+    library("jpeg")
+}
+if (!require("VGAM")) {
+    install.packages("VGAM")              
+    library("VGAM")
+}
+if (!require("MASS")) {
+    install.packages("MASS")              
+    library("MASS")
+}
+if (!require("nnet")) {
+    install.packages("nnet")              
+    library("nnet")
+}
+if (!require("cluster")) {
+    install.packages("cluster")              
+    library("cluster")
+}
+
+# knitr::opts_knit$set(root.dir = "C:\\STA490\\w05")
+knitr::opts_chunk$set(echo = TRUE,       
+                      warning = FALSE,   
+                      result = TRUE,   
+                      message = FALSE,
+                      comment = NA)
+```
+
+
+```{r dataset, include=FALSE}
+penguin<-read.csv(file="https://dannyoc99.github.io/DOCAL/dataset/w03-penguins.csv")
+```
+
+# Plotting Flipper Length (mm) vs Bill Length (mm)
+
+
+```{r plot, echo=TRUE}
+
+penguin.img <- "https://dannyoc99.github.io/DOCAL/img/penguin.jpeg"
+my.penguin <- readJPEG(getURLContent(penguin.img))
+raster.penguin <- as.raster(my.penguin) 
+# Define Necessary Variables
+penguin.bill_length = penguin$bill_length_mm
+penguin.flipper = penguin$flipper_length_mm
+penguin.mass = penguin$body_mass_g
+species = penguin$species
+## identifying the ID of Penguins
+Adelie.id = which(species=="Adelie") 
+Chinstrap.id = which(species=="Chinstrap")
+Gentoo.id = which(species=="Gentoo")
+plot(penguin.bill_length, penguin.flipper,xlab="Bill Length (mm)",ylab="Flipper Length (mm)", main = "Flipper Length vs Bill Length by Species", type = "n")
+## change the point size based on their average of sepal length and width
+points(penguin.bill_length[Adelie.id], penguin.flipper[Adelie.id], 
+       pch = 19, col = "blue", cex = .0002*penguin.mass[Adelie.id], alpha = 0.6)
+points(penguin.bill_length[Chinstrap.id], penguin.flipper[Chinstrap.id], 
+       pch = 19, col = "black", cex = .0002*penguin.mass[Chinstrap.id], alpha = 0.6)
+points(penguin.bill_length[Gentoo.id], penguin.flipper[Gentoo.id], 
+       pch = 19, col = "orange", cex = .0002*penguin.mass[Gentoo.id], alpha = 0.6)
+legend("topleft", c("Adelie", "Chinstrap", "Gentoo"), 
+                  col=c("blue", "black", "orange"),
+                  pch=c(19, 19, 19))
+## various annotations
+#specify the position of the image through bottom-left and top-right coords
+rasterImage(raster.penguin,56,190,62,220)
+text(36, 205, "Size proportional to Body Mass (g)", col = "Black", cex = .7)
+```
+
+
+Here we see a Plot of Flipper Length vs Bill Length by Species. Each species is given its own set of colors to demonstrate the efect species has on the relationship of bill length and flipper length. Additionally, Body Mass of the penguins within its species was used to create the size of the points. From what we can see, visualizing without accounting for species would indicate a weak linear relationship, but taking into account Species we see a strong relationship between Flipper Length and Bill Length.
